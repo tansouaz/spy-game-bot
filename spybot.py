@@ -15,10 +15,79 @@ TOKEN = os.getenv("TOKEN")
 
 # ---------------- DATA ----------------
 WORDS = {
-    "fa": ["فرودگاه", "بیمارستان", "مدرسه", "رستوران", "پارک", "بازار"],
-    "en": ["Airport", "Hospital", "School", "Restaurant", "Park", "Market"],
-    "tr": ["Havalimanı", "Hastane", "Okul", "Restoran", "Park", "Pazar"],
-    "ru": ["Аэропорт", "Больница", "Школа", "Ресторан", "Парк", "Рынок"],
+    "fa": [
+        "فرودگاه",
+        "بیمارستان",
+        "مدرسه",
+        "رستوران",
+        "پارک",
+        "بازار",
+        "سینما",
+        "هتل",
+        "بانک",
+        "کافه",
+        "کتابخانه",
+        "دانشگاه",
+        "استخر",
+        "باشگاه",
+        "ایستگاه مترو",
+        "پلیس",
+        "موزه",
+        "ساحل",
+        "مغازه",
+        "کارخانه"
+    ],
+
+    "en": [
+        "Airport",
+        "Hospital",
+        "School",
+        "Restaurant",
+        "Park",
+        "Market",
+        "Cinema",
+        "Hotel",
+        "Bank",
+        "Cafe",
+        "Library",
+        "University",
+        "Swimming Pool",
+        "Gym",
+        "Subway Station",
+        "Police Station",
+        "Museum",
+        "Beach",
+        "Shop",
+        "Factory"
+    ],
+
+    "tr": [
+        "Havalimanı",
+        "Hastane",
+        "Okul",
+        "Restoran",
+        "Park",
+        "Pazar",
+        "Sinema",
+        "Otel",
+        "Banka",
+        "Kafe",
+        "Kütüphane",
+        "Üniversite",
+        "Yüzme Havuzu",
+        "Spor Salonu",
+        "Metro İstasyonu",
+        "Polis Karakolu",
+        "Müze",
+        "Plaj",
+        "Mağaza",
+        "Fabrika"
+    ],
+
+    "ru": [
+        "Аэропорт",
+        "Больница",
+    ]
 }
 
 TEXT = {
