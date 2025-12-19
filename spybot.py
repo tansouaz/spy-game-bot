@@ -165,6 +165,30 @@ TEXT = {
 }
 
 games = {}
+# ================= WHATS GAME =================
+async def whats_game(update, context):
+    await update.message.reply_text(
+        "🎭 What’s this game?\n\n"
+        "📱 One phone\n"
+        "🔐 One secret word\n"
+        "😈 One (or more) spies\n\n"
+        "Some players know the word.\n"
+        "The spy does NOT.\n\n"
+        "Pass the phone, see your role,\n"
+        "and try not to get caught 👀"
+    )
+    # ================= HOW TO PLAY =================
+async def how_to_play(update, context):
+    await update.message.reply_text(
+        "🎮 How to play (super easy):\n\n"
+        "1️⃣ Open the bot 🤖\n"
+        "2️⃣ Choose a language 🌍\n"
+        "3️⃣ Select number of players 👥\n"
+        "4️⃣ Pass the phone around 📲\n"
+        "5️⃣ See your role and remember it 🧠\n\n"
+        "😈 If you’re the spy… blend in!\n"
+        "👀 If not… find the spy!"
+    )
 
 # ================= START =================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -398,6 +422,10 @@ def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+    
+    app.add_handler(CommandHandler("whatsgame", whats_game))
+    app.add_handler(CommandHandler("howtoplay", how_to_play))
+
     app.add_handler(CallbackQueryHandler(set_language, pattern="lang_"))
     app.add_handler(CallbackQueryHandler(start_game, pattern="start_game"))
     app.add_handler(CallbackQueryHandler(show_role, pattern="show_role"))
