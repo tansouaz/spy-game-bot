@@ -86,6 +86,13 @@ TEXT = {
         "end_btn": "🏁 Завершить игру",
         "player": "📱 Игрок",
     },
+    "min_players": {
+    "fa": "😅 حداقل ۳ نفر لازمه!\nیه دوست دیگه هم صدا کن 😉",
+    "en": "😅 You need at least 3 players!\nInvite one more friend 😉",
+    "tr": "😅 En az 3 kişi lazım!\nBir arkadaş daha çağır 😉",
+    "ru": "😅 Нужно минимум 3 игрока!\nПозови ещё одного друга 😉",
+}
+
 }
 
 games = {}
@@ -150,10 +157,15 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         players = int(update.message.text)
-        if players < 3:
-            return
     except:
+            return
+        
+    if players < 3:
+        lang = game["lang"]
+        await update.message.reply_text(TEXT["min_players"][lang])
         return
+
+
 
     game["players"] = players
     game["state"] = "ready"
