@@ -426,6 +426,7 @@ def main():
     app.add_handler(CommandHandler("whatsgame", whats_game))
     app.add_handler(CommandHandler("howtoplay", how_to_play))
 
+
     app.add_handler(CallbackQueryHandler(set_language, pattern="lang_"))
     app.add_handler(CallbackQueryHandler(start_game, pattern="start_game"))
     app.add_handler(CallbackQueryHandler(show_role, pattern="show_role"))
