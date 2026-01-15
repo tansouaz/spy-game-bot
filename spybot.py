@@ -184,7 +184,7 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game = games[uid]
     lang = game["lang"]
 
-    # 🔥 پاک کردن پیام‌های موقت (کلمه + بازیکن)
+    # پاک کردن پیام‌های موقت
     for mid in game["temp_messages"]:
         try:
             await context.bot.delete_message(q.message.chat_id, mid)
@@ -194,17 +194,26 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game["temp_messages"] = []
     game["current"] += 1
 
+    # 👇 اگر آخرین نفر بود
     if game["current"] >= game["players"]:
-        summary = (
-            f"{TEXT[lang]['summary']}\n\n"
-            f"🔑 کلمه اصلی: {game['real_word']}\n"
-            f"🎭 کلمه متفاوت: {game['fake_word']}"
-        )
-        kb = [[InlineKeyboardButton(TEXT[lang]["restart"], callback_data="restart")]]
-        await q.message.reply_text(summary, reply_markup=InlineKeyboardMarkup(kb))
-        return
+        kb = [[Inline]()]()
+# ================= SHOW-RESULT =================
+async def show_result(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query
+    await q.answer()
 
-    await show_player(q.message, uid)
+    uid = q.from_user.id
+    game = games[uid]
+    lang = game["lang"]
+
+    summary = (
+        f"{TEXT[lang]['summary']}\n\n"
+        f"🔑 کلمه اصلی: {game['real_word']}\n"
+        f"🎭 کلمه متفاوت: {game['fake_word']}"
+    )
+
+    kb = [[InlineKeyboardButton(TEXT[lang]["restart"], callback_data="restart")]]
+    await q.message.reply_text(summary, reply_markup=InlineKeyboardMarkup(kb))
 
 # ================= RESTART =================
 async def restart_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -225,6 +234,7 @@ def main():
     app.add_handler(CallbackQueryHandler(restart_game, pattern="restart"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, set_players))
     app.run_polling(close_loop=False)
+    app.add_handler(CallbackQueryHandler(show_result, pattern="show_result"))
 
 if __name__ == "__main__":
     main()
