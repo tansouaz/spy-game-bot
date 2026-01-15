@@ -51,34 +51,42 @@ games = {}
 # ================= START =================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
-    games.pop(uid, None)
-    await update.message.reply_text(TEXT["fa"]["players"])
+    chat_id = update.effective_chat.id
 
-# ================= SET PLAYERS =================
-async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    uid = update.effective_user.id
-    try:
-        players = int(update.message.text)
-    except:
-        return
-    if players < 3:
-        return
+    # اگر قبلاً پیام start داشتیم، پاکش کن
+    if uid in START_MESSAGE_ID:
+        try:
+            await context.bot.delete_message(chat_id, START_MESSAGE_ID[uid])
+        except:
+            pass
 
-    real, fake = random.choice(FAKE_PAIRS["fa"])
-    roles = ["spy"] + ["player"] * (players - 1)
-    random.shuffle(roles)
+    games.pop(uid, None)  # ریست کامل بازی
 
-    games[uid] = {
-        "players": players,
-        "roles": roles,
-        "real": real,
-        "fake": fake,
-        "current": 0,
-        "temp": [],
-    }
+    intro_text = (
+        "🕵️ Spy Game\n"
+        "One phone. One secret word.\n"
+        "Some players know it… one is the spy 😈\n\n"
+        "Choose language 👇"
+    )
 
-    kb = [[InlineKeyboardButton(TEXT["fa"]["start"], callback_data="start_game")]]
-    await update.message.reply_text("📱 گوشی دست نفر اول", reply_markup=InlineKeyboardMarkup(kb))
+    kb = [
+        [
+            InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
+            InlineKeyboardButton("🇬🇧 English", callback_data="lang_en"),
+        ],
+        [
+            InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
+            InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru"),
+        ],
+    ]
+
+    msg = await update.message.reply_text(
+        intro_text,
+        reply_markup=InlineKeyboardMarkup(kb),
+    )
+
+    START_MESSAGE_ID[uid] = msg.message_id
+
 
 # ================= START GAME =================
 async def start_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
