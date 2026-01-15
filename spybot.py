@@ -12,7 +12,7 @@ from telegram.ext import (
 
 TOKEN = os.getenv("TOKEN")
 
-# ================= FAKE PAIRS (30+) =================
+# ================= FAKE PAIRS =================
 FAKE_PAIRS = {
     "fa": [
         ("فرودگاه", "ایستگاه"), ("بیمارستان", "درمانگاه"), ("مدرسه", "دانشگاه"),
@@ -71,7 +71,7 @@ TEXT = {
         "player": "📱 بازیکن",
         "show": "👁 دیدن کلمه",
         "seen": "👁 دیدم",
-        "end_players": "🏁 همه کلمه‌ها دیده شد",
+        "end": "🏁 پایان بازی",
         "result": "📌 نتیجه بازی",
         "real": "🔑 کلمه اصلی:",
         "fake": "🎭 کلمه متفاوت:",
@@ -83,35 +83,11 @@ TEXT = {
         "player": "📱 Player",
         "show": "👁 Show word",
         "seen": "👁 Seen",
-        "end_players": "🏁 All players checked",
+        "end": "🏁 End game",
         "result": "📌 Game result",
         "real": "🔑 Real word:",
         "fake": "🎭 Fake word:",
         "new": "🔁 New game",
-    },
-    "tr": {
-        "choose": "🌍 Choose language",
-        "players": "👥 Kaç oyuncu var? (min 3)",
-        "player": "📱 Oyuncu",
-        "show": "👁 Kelimeyi gör",
-        "seen": "👁 Gördüm",
-        "end_players": "🏁 Herkes baktı",
-        "result": "📌 Oyun sonucu",
-        "real": "🔑 Asıl kelime:",
-        "fake": "🎭 Farklı kelime:",
-        "new": "🔁 Yeni oyun",
-    },
-    "ru": {
-        "choose": "🌍 Choose language",
-        "players": "👥 Сколько игроков? (мин 3)",
-        "player": "📱 Игрок",
-        "show": "👁 Показать слово",
-        "seen": "👁 Видел",
-        "end_players": "🏁 Все посмотрели",
-        "result": "📌 Результат игры",
-        "real": "🔑 Основное слово:",
-        "fake": "🎭 Другое слово:",
-        "new": "🔁 Новая игра",
     },
 }
 
@@ -119,14 +95,11 @@ games = {}
 
 # ================= START =================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # تشخیص اینکه از command اومده یا callback
-    if update.message:
-        chat = update.message
-        uid = update.message.from_user.id
-    else:
-        q = update.callback_query
-        chat = q.message
-        uid = q.from_user.id
+    uid = update.effective_user.id
+
+    # پاک‌سازی هر چیزی که قبلاً بوده
+    if uid in games:
+        del games[uid]
 
     kb = [
         [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
@@ -135,22 +108,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
          InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
     ]
 
-    await chat.reply_text(
+    await update.effective_chat.send_message(
         "🌍 Choose language",
         reply_markup=InlineKeyboardMarkup(kb)
     )
-
 
 # ================= LANGUAGE =================
 async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     lang = q.data.split("_")[1]
+
     games[q.from_user.id] = {
         "lang": lang,
         "state": "players",
         "msgs": [],
     }
+
     await q.message.delete()
     await q.message.reply_text(TEXT[lang]["players"])
 
@@ -184,16 +158,16 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "state": "play",
     })
 
-    await show_player(update, uid)
+    await show_player(update.message, uid)
 
 # ================= SHOW PLAYER =================
-async def show_player(update, uid):
+async def show_player(message, uid):
     game = games[uid]
     lang = game["lang"]
     i = game["i"]
 
     kb = [[InlineKeyboardButton(TEXT[lang]["show"], callback_data="show")]]
-    msg = await update.message.reply_text(
+    msg = await message.reply_text(
         f"{TEXT[lang]['player']} {i+1}",
         reply_markup=InlineKeyboardMarkup(kb),
     )
@@ -230,8 +204,8 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game["i"] += 1
 
     if game["i"] >= len(game["words"]):
-        kb = [[InlineKeyboardButton("🏁 End game", callback_data="end")]]
-        await q.message.reply_text(TEXT[lang]["end_players"], reply_markup=InlineKeyboardMarkup(kb))
+        kb = [[InlineKeyboardButton(TEXT[lang]["end"], callback_data="end")]]
+        await q.message.reply_text(TEXT[lang]["end"], reply_markup=InlineKeyboardMarkup(kb))
         return
 
     await show_player(q.message, uid)
@@ -255,15 +229,7 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ================= RESTART =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    q = update.callback_query
-    await q.answer()
-
-    uid = q.from_user.id
-    if uid in games:
-        del games[uid]   # پاک‌سازی کامل بازی قبلی
-
-    await start(q, context)
-
+    await start(update, context)
 
 # ================= MAIN =================
 def main():
