@@ -256,27 +256,24 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ================= RESTART =================
 # ================= RESTART (FIXED) =================
+# ================= RESTART (FINAL FIX) =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
 
     uid = q.from_user.id
 
-    # پاک‌سازی کامل state بازی قبلی
-    games.pop(uid, None)
+    # پاک‌سازی کامل state
+    games[uid] = {
+        "lang": games.get(uid, {}).get("lang", "fa"),
+        "state": "players",
+        "msgs": [],
+    }
 
-    # دوباره پیام انتخاب زبان (مثل /start)
-    kb = [
-        [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
-         InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
-        [InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
-         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
-    ]
+    lang = games[uid]["lang"]
 
-    await q.message.reply_text(
-        TEXT["en"]["choose"],
-        reply_markup=InlineKeyboardMarkup(kb)
-    )
+    # فقط پرسش تعداد بازیکن – بدون تغییر ظاهر
+    await q.message.reply_text(TEXT[lang]["players"])
 
 
 # ================= MAIN =================
