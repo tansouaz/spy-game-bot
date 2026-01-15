@@ -119,16 +119,27 @@ games = {}
 
 # ================= START =================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # تشخیص اینکه از command اومده یا callback
+    if update.message:
+        chat = update.message
+        uid = update.message.from_user.id
+    else:
+        q = update.callback_query
+        chat = q.message
+        uid = q.from_user.id
+
     kb = [
         [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
          InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
         [InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
-         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
+         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
     ]
-    await update.message.reply_text(
+
+    await chat.reply_text(
         "🌍 Choose language",
-        reply_markup=InlineKeyboardMarkup(kb),
+        reply_markup=InlineKeyboardMarkup(kb)
     )
+
 
 # ================= LANGUAGE =================
 async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
