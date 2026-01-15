@@ -188,9 +188,24 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    await q.message.reply_text("🔄")
-    games[q.message.chat_id] = {"state": "lang"}
-    await start(Update(update.update_id, message=q.message), context)
+
+    chat_id = q.message.chat_id
+
+    # پاک‌سازی کامل بازی قبلی
+    games[chat_id] = {"state": "lang"}
+
+    kb = [
+        [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
+         InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
+        [InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
+         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
+    ]
+
+    await q.message.reply_text(
+        "🌍 Choose language",
+        reply_markup=InlineKeyboardMarkup(kb)
+    )
+
 
 # ================= MAIN =================
 def main():
