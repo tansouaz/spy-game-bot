@@ -122,10 +122,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru"),
         ],
     ]
+
     await update.message.reply_text(
-        "🕵️ Spy Game\nChoose language 👇",
+        "🌍 Choose language",
         reply_markup=InlineKeyboardMarkup(kb),
     )
+
 
 # ================= LANGUAGE =================
 async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
