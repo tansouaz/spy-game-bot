@@ -123,47 +123,31 @@ games = {}
 
 # ================= START =================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message:
-        chat = update.message
-        uid = update.message.from_user.id
-    else:
-        q = update.callback_query
-        chat = q.message
-        uid = q.from_user.id
-
-    lang = games.get(uid, {}).get("lang", "en")
-
+    uid = update.effective_user.id
+    games[uid] = {"state": "lang"}
     kb = [
         [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
          InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
         [InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
          InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
     ]
-
-    await chat.reply_text(TEXT[lang]["choose"], reply_markup=InlineKeyboardMarkup(kb))
-
+    await update.effective_message.reply_text(
+        TEXT["en"]["choose"],
+        reply_markup=InlineKeyboardMarkup(kb),
+    )
 
 # ================= LANGUAGE =================
 async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     lang = q.data.split("_")[1]
-
-    games[q.from_user.id] = {
-        "lang": lang,
-        "state": "players",
-        "msgs": [],
-    }
-
-    await q.message.delete()
+    games[q.from_user.id] = {"lang": lang, "state": "players"}
     await q.message.reply_text(TEXT[lang]["players"])
-
 
 # ================= PLAYER COUNT =================
 async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid = update.message.from_user.id
     game = games.get(uid)
-
     if not game or game["state"] != "players":
         return
 
@@ -172,27 +156,13 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except:
         return
 
-    if n < 3:
-        await update.message.reply_text(TEXT[game["lang"]]["players"])
-        return
-
     real, fake = random.choice(FAKE_PAIRS[game["lang"]])
     fake_count = random.randint(1, n // 2)
-
     words = [real] * (n - fake_count) + [fake] * fake_count
     random.shuffle(words)
 
-    game.update({
-        "words": words,
-        "real": real,
-        "fake": fake,
-        "i": 0,
-        "state": "play",
-        "msgs": [],
-    })
-
+    game.update({"words": words, "real": real, "fake": fake, "i": 0, "state": "play"})
     await show_player(update.message, uid)
-
 
 # ================= SHOW PLAYER =================
 async def show_player(message, uid):
@@ -201,62 +171,42 @@ async def show_player(message, uid):
     i = game["i"]
 
     kb = [[InlineKeyboardButton(TEXT[lang]["show"], callback_data="show")]]
-    msg = await message.reply_text(
+    await message.reply_text(
         f"{TEXT[lang]['player']} {i+1}",
-        reply_markup=InlineKeyboardMarkup(kb)
+        reply_markup=InlineKeyboardMarkup(kb),
     )
-    game["msgs"].append(msg.message_id)
-
 
 # ================= SHOW WORD =================
 async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-
-    uid = q.from_user.id
-    game = games[uid]
+    game = games[q.from_user.id]
     lang = game["lang"]
 
     word = game["words"][game["i"]]
-
     kb = [[InlineKeyboardButton(TEXT[lang]["seen"], callback_data="seen")]]
-    msg = await q.message.reply_text(f"🔑 {word}", reply_markup=InlineKeyboardMarkup(kb))
-    game["msgs"].append(msg.message_id)
-
+    await q.message.reply_text(f"🔑 {word}", reply_markup=InlineKeyboardMarkup(kb))
 
 # ================= SEEN =================
 async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-
     uid = q.from_user.id
     game = games[uid]
     lang = game["lang"]
 
-    for mid in game["msgs"]:
-        try:
-            await context.bot.delete_message(q.message.chat_id, mid)
-        except:
-            pass
-    game["msgs"].clear()
-
     game["i"] += 1
-
     if game["i"] >= len(game["words"]):
         kb = [[InlineKeyboardButton(TEXT[lang]["end"], callback_data="end")]]
         await q.message.reply_text(TEXT[lang]["end_players"], reply_markup=InlineKeyboardMarkup(kb))
-        return
-
-    await show_player(q.message, uid)
-
+    else:
+        await show_player(q.message, uid)
 
 # ================= END GAME =================
 async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-
-    uid = q.from_user.id
-    game = games[uid]
+    game = games[q.from_user.id]
     lang = game["lang"]
 
     text = (
@@ -264,32 +214,21 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"{TEXT[lang]['real']} {game['real']}\n"
         f"{TEXT[lang]['fake']} {game['fake']}"
     )
-
     kb = [[InlineKeyboardButton(TEXT[lang]["new"], callback_data="restart")]]
     await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
-
 
 # ================= RESTART =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-
     uid = q.from_user.id
-    lang = games.get(uid, {}).get("lang", "en")
-
-    games[uid] = {
-        "lang": lang,
-        "state": "players",
-        "msgs": [],
-    }
-
+    lang = games[uid]["lang"]
+    games[uid] = {"lang": lang, "state": "players"}
     await q.message.reply_text(TEXT[lang]["players"])
-
 
 # ================= MAIN =================
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
-
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(set_language, pattern="^lang_"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, set_players))
@@ -297,9 +236,7 @@ def main():
     app.add_handler(CallbackQueryHandler(seen, pattern="^seen$"))
     app.add_handler(CallbackQueryHandler(end_game, pattern="^end$"))
     app.add_handler(CallbackQueryHandler(restart, pattern="^restart$"))
-
     app.run_polling()
-
 
 if __name__ == "__main__":
     main()
