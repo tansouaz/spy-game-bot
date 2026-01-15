@@ -133,6 +133,7 @@ async def start_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "temp_messages": [],
         "state": "playing",
         "spy_count": spies,
+        "temp_messages": [],
     })
     await show_player(q.message, uid)
 
@@ -141,35 +142,64 @@ async def show_player(message, uid):
     game = games[uid]
     lang = game["lang"]
     i = game["current"]
+
     kb = [[InlineKeyboardButton(TEXT[lang]["show"], callback_data="show_role")]]
-    await message.reply_text(f"{TEXT[lang]['player']} {i+1}", reply_markup=InlineKeyboardMarkup(kb))
+    msg = await message.reply_text(
+        f"{TEXT[lang]['player']} {i + 1}",
+        reply_markup=InlineKeyboardMarkup(kb),
+    )
+
+    game["temp_messages"].append(msg.message_id)
+
 
 # ================= SHOW ROLE =================
 async def show_role(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
+
     uid = q.from_user.id
     game = games[uid]
+    lang = game["lang"]
+
     word = game["fake_word"] if game["roles"][game["current"]] == "spy" else game["real_word"]
-    kb = [[InlineKeyboardButton(TEXT[game["lang"]]["seen"], callback_data="seen")]]
-    await q.message.reply_text(TEXT[game["lang"]]["word"] + word, reply_markup=InlineKeyboardMarkup(kb))
+
+    kb = [[InlineKeyboardButton(TEXT[lang]["seen"], callback_data="seen")]]
+    msg = await q.message.reply_text(
+        TEXT[lang]["word"] + word,
+        reply_markup=InlineKeyboardMarkup(kb),
+    )
+
+    game["temp_messages"].append(msg.message_id)
 
 # ================= SEEN =================
 async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
+
     uid = q.from_user.id
     game = games[uid]
+    lang = game["lang"]
+
+    # 🔥 پاک کردن پیام‌های موقت (کلمه + بازیکن)
+    for mid in game["temp_messages"]:
+        try:
+            await context.bot.delete_message(q.message.chat_id, mid)
+        except:
+            pass
+
+    game["temp_messages"] = []
     game["current"] += 1
+
     if game["current"] >= game["players"]:
         summary = (
-            f"{TEXT[game['lang']]['summary']}\n\n"
+            f"{TEXT[lang]['summary']}\n\n"
             f"🔑 کلمه اصلی: {game['real_word']}\n"
             f"🎭 کلمه متفاوت: {game['fake_word']}"
         )
-        kb = [[InlineKeyboardButton(TEXT[game["lang"]]["restart"], callback_data="restart")]]
+        kb = [[InlineKeyboardButton(TEXT[lang]["restart"], callback_data="restart")]]
         await q.message.reply_text(summary, reply_markup=InlineKeyboardMarkup(kb))
         return
+
     await show_player(q.message, uid)
 
 # ================= RESTART =================
