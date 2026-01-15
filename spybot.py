@@ -182,7 +182,6 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     uid = q.from_user.id
     game = games[uid]
-    lang = game["lang"]
 
     # پاک کردن پیام‌های موقت
     for mid in game["temp_messages"]:
@@ -196,7 +195,16 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # 👇 اگر آخرین نفر بود
     if game["current"] >= game["players"]:
-        kb = [[Inline]()]()
+        kb = [[InlineKeyboardButton("🏁 نمایش نتیجه", callback_data="show_result")]]
+
+        # ✅ به‌جای reply_text
+        await q.message.edit_text(
+            "📱 همه بازیکن‌ها کلمه رو دیدن\n👇 وقتی آماده‌اید نتیجه رو ببینید",
+            reply_markup=InlineKeyboardMarkup(kb),
+        )
+        return
+
+    await show_player(q.message, uid)
 # ================= SHOW-RESULT =================
 async def show_result(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
