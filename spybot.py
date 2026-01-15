@@ -230,7 +230,7 @@ def main():
     app.add_handler(CallbackQueryHandler(set_language, pattern="lang_"))
     app.add_handler(CallbackQueryHandler(start_game, pattern="start_game"))
     app.add_handler(CallbackQueryHandler(show_role, pattern="show_role"))
-    app.add_handler(CallbackQueryHandler(seen, pattern="seen"))
+    app.add_handler(CallbackQueryHandler(seen, pattern="^seen$"))
     app.add_handler(CallbackQueryHandler(restart_game, pattern="restart"))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, set_players))
     app.run_polling(close_loop=False)
