@@ -161,17 +161,17 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await show_player(update.message, uid)
 
 # ================= SHOW PLAYER =================
-async def show_player(message, uid):
+async def show_player_chat(context, chat_id, uid):
     game = games[uid]
     lang = game["lang"]
     i = game["i"]
 
     kb = [[InlineKeyboardButton(TEXT[lang]["show"], callback_data="show")]]
-    msg = await message.reply_text(
+    msg = await context.bot.send_message(
+        chat_id,
         f"{TEXT[lang]['player']} {i+1}",
-        reply_markup=InlineKeyboardMarkup(kb),
+        reply_markup=InlineKeyboardMarkup(kb)
     )
-    game["msgs"].append(msg.message_id)
 
 # ================= SHOW WORD =================
 async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -190,26 +190,34 @@ async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
+
     uid = q.from_user.id
     game = games[uid]
     lang = game["lang"]
+    chat_id = q.message.chat_id
 
+    # فقط پیام‌های موقت (کلمه) پاک می‌شن
     for mid in game["msgs"]:
         try:
-            await context.bot.delete_message(q.message.chat_id, mid)
+            await context.bot.delete_message(chat_id, mid)
         except:
             pass
     game["msgs"].clear()
 
+    # رفتن به نفر بعد
     game["i"] += 1
 
     if game["i"] >= len(game["words"]):
         kb = [[InlineKeyboardButton(TEXT[lang]["end"], callback_data="end")]]
-        await q.message.reply_text(TEXT[lang]["end"], reply_markup=InlineKeyboardMarkup(kb))
+        await context.bot.send_message(
+            chat_id,
+            TEXT[lang]["end"],
+            reply_markup=InlineKeyboardMarkup(kb)
+        )
         return
 
-    await show_player(q.message, uid)
-
+    # 🔴 مهم: پیام جدید، نه q.message
+    await show_player_chat(context, chat_id, uid)
 # ================= END GAME =================
 async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
