@@ -105,6 +105,7 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
     kb = [[InlineKeyboardButton(TEXT["fa"]["start"], callback_data="start_game")]]
     await update.message.reply_text(TEXT["fa"]["ready"], reply_markup=InlineKeyboardMarkup(kb))
 
+
 # ================= START GAME =================
 async def start_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
