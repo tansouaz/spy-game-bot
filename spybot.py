@@ -131,16 +131,20 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     game["current"] += 1
 
+    # 👇 اگر آخرین نفر بود
     if game["current"] >= game["players"]:
         kb = [[InlineKeyboardButton("🏁 نمایش نتیجه", callback_data="show_result")]]
 
-        await q.message.edit_text(
-            "📱 همه بازیکن‌ها کلمه رو دیدن\n👇 وقتی آماده‌اید نتیجه رو ببینید",
+        # ❗ پیام جدید فقط اینجا
+        await context.bot.send_message(
+            chat_id=q.message.chat_id,
+            text="📱 همه بازیکن‌ها کلمه رو دیدن\n👇 وقتی آماده‌اید نتیجه رو ببینید",
             reply_markup=InlineKeyboardMarkup(kb),
         )
         return
 
     await show_player(context, q.message.chat_id, uid)
+
 
 # ================= SHOW RESULT =================
 async def show_result(update: Update, context: ContextTypes.DEFAULT_TYPE):
