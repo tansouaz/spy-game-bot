@@ -1,6 +1,6 @@
 import os
 import random
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -12,7 +12,7 @@ from telegram.ext import (
 
 TOKEN = os.getenv("TOKEN")
 
-# ================= FAKE PAIRS (UNCHANGED) =================
+# ================= FAKE PAIRS (30+) =================
 FAKE_PAIRS = {
     "fa": [
         ("فرودگاه", "ایستگاه"), ("بیمارستان", "درمانگاه"),
@@ -23,12 +23,13 @@ FAKE_PAIRS = {
         ("هتل", "مهمانسرا"), ("بانک", "صرافی"),
         ("کافه", "رستوران"), ("موزه", "گالری"),
         ("قطار", "مترو"), ("اتوبوس", "تاکسی"),
-        ("پل", "تونل"), ("پارکینگ", "گاراژ"),
-        ("دفتر", "اداره"), ("کارمند", "مدیر"),
+        ("کارخانه", "کارگاه"), ("آشپزخانه", "رستوران"),
         ("پزشک", "پرستار"), ("داروخانه", "درمانگاه"),
         ("ورزشگاه", "باشگاه"), ("ساحل", "اسکله"),
-        ("خیابان", "کوچه"), ("کارخانه", "کارگاه"),
-        ("فرود", "پرواز"), ("کلاس", "جلسه"),
+        ("خیابان", "کوچه"), ("پل", "تونل"),
+        ("پارکینگ", "گاراژ"), ("دفتر", "اداره"),
+        ("کارمند", "مدیر"), ("کلاس", "جلسه"),
+        ("پرواز", "فرود"),
     ],
     "en": [
         ("Airport", "Station"), ("Hospital", "Clinic"),
@@ -39,11 +40,12 @@ FAKE_PAIRS = {
         ("Hotel", "Hostel"), ("Bank", "Exchange"),
         ("Cafe", "Restaurant"), ("Museum", "Gallery"),
         ("Train", "Metro"), ("Bus", "Taxi"),
-        ("Bridge", "Tunnel"), ("Parking", "Garage"),
-        ("Office", "Department"), ("Employee", "Manager"),
+        ("Factory", "Workshop"), ("Kitchen", "Restaurant"),
         ("Doctor", "Nurse"), ("Pharmacy", "Clinic"),
         ("Stadium", "Gym"), ("Street", "Alley"),
-        ("Factory", "Workshop"), ("Flight", "Landing"),
+        ("Bridge", "Tunnel"), ("Office", "Department"),
+        ("Employee", "Manager"), ("Class", "Meeting"),
+        ("Flight", "Landing"),
     ],
     "tr": [
         ("Havalimanı", "İstasyon"), ("Hastane", "Klinik"),
@@ -54,8 +56,11 @@ FAKE_PAIRS = {
         ("Otel", "Pansiyon"), ("Banka", "Dövizci"),
         ("Kafe", "Restoran"), ("Müze", "Galeri"),
         ("Tren", "Metro"), ("Otobüs", "Taksi"),
-        ("Köprü", "Tünel"), ("Otopark", "Garaj"),
-        ("Ofis", "Departman"), ("Çalışan", "Müdür"),
+        ("Fabrika", "Atölye"), ("Mutfak", "Restoran"),
+        ("Doktor", "Hemşire"), ("Eczane", "Klinik"),
+        ("Stadyum", "Salon"), ("Cadde", "Sokak"),
+        ("Köprü", "Tünel"), ("Ofis", "Departman"),
+        ("Çalışan", "Müdür"), ("Uçuş", "İniş"),
     ],
     "ru": [
         ("Аэропорт", "Станция"), ("Больница", "Клиника"),
@@ -64,52 +69,88 @@ FAKE_PAIRS = {
         ("Лес", "Парк"), ("Бассейн", "Спортзал"),
         ("Кино", "Театр"), ("Библиотека", "Книжный"),
         ("Отель", "Хостел"), ("Банк", "Обмен"),
+        ("Кафе", "Ресторан"), ("Музей", "Галерея"),
         ("Поезд", "Метро"), ("Автобус", "Такси"),
-        ("Мост", "Тоннель"), ("Парковка", "Гараж"),
-        ("Офис", "Отдел"), ("Работник", "Менеджер"),
+        ("Фабрика", "Мастерская"), ("Кухня", "Ресторан"),
+        ("Врач", "Медсестра"), ("Аптека", "Клиника"),
+        ("Стадион", "Зал"), ("Улица", "Переулок"),
+        ("Мост", "Тоннель"), ("Офис", "Отдел"),
+        ("Работник", "Менеджер"), ("Рейс", "Посадка"),
     ],
+}
+
+TEXT = {
+    "choose": {
+        "fa": "🌍 زبان را انتخاب کنید",
+        "en": "🌍 Choose language",
+        "tr": "🌍 Dil seç",
+        "ru": "🌍 Выберите язык",
+    },
+    "players": {
+        "fa": "👥 تعداد بازیکن‌ها چند نفر است؟ (حداقل ۳)",
+        "en": "👥 Number of players? (min 3)",
+        "tr": "👥 Oyuncu sayısı kaç? (en az 3)",
+        "ru": "👥 Сколько игроков? (минимум 3)",
+    },
+    "player": {
+        "fa": "📱 بازیکن {n}",
+        "en": "📱 Player {n}",
+        "tr": "📱 Oyuncu {n}",
+        "ru": "📱 Игрок {n}",
+    },
+    "end_players": {
+        "fa": "🏁 پایان بازیکن‌ها",
+        "en": "🏁 End of players",
+        "tr": "🏁 Oyuncular bitti",
+        "ru": "🏁 Игроки закончились",
+    },
+    "result": {
+        "fa": "📌 نتیجه بازی\n\n🔑 کلمه اصلی: {real}\n🎭 کلمه متفاوت: {fake}",
+        "en": "📌 Game result\n\n🔑 Real word: {real}\n🎭 Fake word: {fake}",
+        "tr": "📌 Oyun sonucu\n\n🔑 Gerçek kelime: {real}\n🎭 Farklı kelime: {fake}",
+        "ru": "📌 Результат игры\n\n🔑 Основное слово: {real}\n🎭 Другое слово: {fake}",
+    }
 }
 
 games = {}
 
 # ================= START =================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    games[chat_id] = {"state": "lang"}
+
     kb = [
         [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
          InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
         [InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
-         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
+         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
     ]
     await update.message.reply_text(
-        "🌍 Choose language",
-        reply_markup=InlineKeyboardMarkup(kb)
+        TEXT["choose"]["en"],
+        reply_markup=InlineKeyboardMarkup(kb),
     )
 
 # ================= LANGUAGE =================
 async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
+    chat_id = q.message.chat_id
     lang = q.data.split("_")[1]
 
-    games[q.from_user.id] = {
+    games[chat_id] = {
         "lang": lang,
         "state": "players",
         "msgs": []
     }
 
     await q.message.delete()
-    texts = {
-        "fa": "👥 تعداد بازیکن‌ها؟ (حداقل ۳)",
-        "en": "👥 Number of players? (min 3)",
-        "tr": "👥 Oyuncu sayısı? (en az 3)",
-        "ru": "👥 Количество игроков? (мин 3)"
-    }
-    await q.message.reply_text(texts[lang])
+    await context.bot.send_message(chat_id, TEXT["players"][lang])
 
 # ================= PLAYER COUNT =================
 async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    uid = update.message.from_user.id
-    game = games.get(uid)
+    chat_id = update.message.chat_id
+    game = games.get(chat_id)
+
     if not game or game["state"] != "players":
         return
 
@@ -133,17 +174,19 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "state": "playing"
     })
 
-    await next_player(update, uid)
+    await show_player(context, chat_id)
 
-# ================= NEXT PLAYER =================
-async def next_player(update, uid):
-    game = games[uid]
+# ================= SHOW PLAYER =================
+async def show_player(context, chat_id):
+    game = games[chat_id]
     i = game["i"]
+    lang = game["lang"]
 
-    kb = [[InlineKeyboardButton("👁 دیدن کلمه", callback_data="show")]]
-    msg = await update.message.reply_text(
-        f"📱 بازیکن {i+1}",
-        reply_markup=InlineKeyboardMarkup(kb)
+    kb = [[InlineKeyboardButton("👁", callback_data="show")]]
+    msg = await context.bot.send_message(
+        chat_id,
+        TEXT["player"][lang].format(n=i + 1),
+        reply_markup=InlineKeyboardMarkup(kb),
     )
     game["msgs"].append(msg.message_id)
 
@@ -151,24 +194,29 @@ async def next_player(update, uid):
 async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    uid = q.from_user.id
-    game = games[uid]
+    chat_id = q.message.chat_id
+    game = games[chat_id]
 
     word = game["words"][game["i"]]
-    kb = [[InlineKeyboardButton("👁 دیدم", callback_data="seen")]]
-    msg = await q.message.reply_text(f"🔑 {word}", reply_markup=InlineKeyboardMarkup(kb))
+    kb = [[InlineKeyboardButton("✅", callback_data="seen")]]
+
+    msg = await context.bot.send_message(
+        chat_id,
+        f"🔑 {word}",
+        reply_markup=InlineKeyboardMarkup(kb),
+    )
     game["msgs"].append(msg.message_id)
 
 # ================= SEEN =================
 async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    uid = q.from_user.id
-    game = games[uid]
+    chat_id = q.message.chat_id
+    game = games[chat_id]
 
     for mid in game["msgs"]:
         try:
-            await context.bot.delete_message(q.message.chat_id, mid)
+            await context.bot.delete_message(chat_id, mid)
         except:
             pass
     game["msgs"].clear()
@@ -176,27 +224,29 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game["i"] += 1
 
     if game["i"] >= len(game["words"]):
-        kb = [[InlineKeyboardButton("🏁 پایان بازی", callback_data="end")]]
-        await q.message.reply_text("🏁 همه دیدند", reply_markup=InlineKeyboardMarkup(kb))
+        kb = [[InlineKeyboardButton("🏁", callback_data="end")]]
+        await context.bot.send_message(
+            chat_id,
+            TEXT["end_players"][game["lang"]],
+            reply_markup=InlineKeyboardMarkup(kb),
+        )
         return
 
-    await next_player(q.message, uid)
+    await show_player(context, chat_id)
 
 # ================= END GAME =================
 async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    uid = q.from_user.id
-    game = games.pop(uid)
+    chat_id = q.message.chat_id
+    game = games.pop(chat_id)
 
-    text = (
-        "📌 نتیجه بازی\n\n"
-        f"🔑 کلمه اصلی: {game['real']}\n"
-        f"🎭 کلمه متفاوت: {game['fake']}"
+    text = TEXT["result"][game["lang"]].format(
+        real=game["real"], fake=game["fake"]
     )
+    kb = [[InlineKeyboardButton("🔁", callback_data="restart")]]
 
-    kb = [[InlineKeyboardButton("🔁 شروع بازی جدید", callback_data="restart")]]
-    await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
+    await context.bot.send_message(chat_id, text, reply_markup=InlineKeyboardMarkup(kb))
 
 # ================= RESTART =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
