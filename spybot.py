@@ -1,10 +1,6 @@
 import os
 import random
-from telegram import (
-    Update,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-)
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -16,7 +12,7 @@ from telegram.ext import (
 
 TOKEN = os.getenv("TOKEN")
 
-# ================== DATA ==================
+# ===================== DATA =====================
 
 FAKE_PAIRS = {
     "fa": [("گیلاس","آلبالو"),("سیب","گلابی"),("رستوران","کافه"),("قطار","مترو"),("ساحل","دریا"),
@@ -48,92 +44,76 @@ FAKE_PAIRS = {
            ("Аптека","Клиника"),("Скорая","Экстренная"),("Полюс","Север"),("Гора","Холм"),("Улица","Переулок")]
 }
 
+
 TEXT = {
     "fa": {
         "choose_lang": "🌍 زبان را انتخاب کنید",
         "players": "👥 تعداد بازیکن‌ها چند نفر است؟ (حداقل ۳)",
         "ready": "📱 همه آماده‌اید؟ گوشی دست نفر اول",
         "start": "🎮 شروع بازی",
-        "show": "👁 دیدن کلمه",
+        "show": "👁 دیدن نقش",
         "seen": "👁 دیدم",
-        "spy": "😈 تو جاسوسی\n❌ کلمه‌ای نداری",
         "player": "📱 بازیکن",
-        "all_seen": "✅ همه بازیکن‌ها کلمه رو دیدن",
-        "end": "🏁 پایان بازی",
+        "spy": "😈 تو جاسوسی\n❌ کلمه‌ای نداری",
+        "end": "✅ همه نقش‌ها دیده شد",
+        "end_btn": "🏁 پایان بازی",
         "restart": "🔁 شروع بازی جدید",
-        "summary": "🏁 نتیجه بازی",
-        "min_players": "😅 حداقل ۳ نفر لازمه!",
+        "summary": "🏁 پایان بازی\n\n🔑 کلمه اصلی: {real}\n🎭 کلمه متفاوت: {fake}",
+        "min": "😅 حداقل ۳ نفر لازمه!",
     },
     "en": {
         "choose_lang": "🌍 Choose language",
         "players": "👥 How many players? (min 3)",
         "ready": "📱 Everyone ready? Phone to Player 1",
-        "start": "🎮 Start game",
-        "show": "👁 Show word",
+        "start": "🎮 Start Game",
+        "show": "👁 Show role",
         "seen": "👁 Seen",
-        "spy": "😈 You are the SPY\n❌ No word",
         "player": "📱 Player",
-        "all_seen": "✅ All players saw the word",
-        "end": "🏁 End game",
-        "restart": "🔁 New game",
-        "summary": "🏁 Game result",
-        "min_players": "😅 At least 3 players needed!",
+        "spy": "😈 You are the SPY\n❌ No word",
+        "end": "✅ All roles seen",
+        "end_btn": "🏁 End Game",
+        "restart": "🔁 New Game",
+        "summary": "🏁 Game Over\n\n🔑 Real word: {real}\n🎭 Fake word: {fake}",
+        "min": "😅 Minimum 3 players required!",
     },
     "tr": {
         "choose_lang": "🌍 Dil seçin",
         "players": "👥 Kaç oyuncu var? (en az 3)",
         "ready": "📱 Herkes hazır mı? Telefon 1. oyuncuda",
-        "start": "🎮 Oyunu başlat",
-        "show": "👁 Kelimeyi gör",
+        "start": "🎮 Oyunu Başlat",
+        "show": "👁 Rolü Gör",
         "seen": "👁 Gördüm",
-        "spy": "😈 Sen CASUSSUN\n❌ Kelimen yok",
         "player": "📱 Oyuncu",
-        "all_seen": "✅ Herkes kelimeyi gördü",
-        "end": "🏁 Oyunu bitir",
-        "restart": "🔁 Yeni oyun",
-        "summary": "🏁 Oyun sonucu",
-        "min_players": "😅 En az 3 kişi lazım!",
+        "spy": "😈 Sen CASUSSUN\n❌ Kelimen yok",
+        "end": "✅ Herkes rolünü gördü",
+        "end_btn": "🏁 Oyunu Bitir",
+        "restart": "🔁 Yeni Oyun",
+        "summary": "🏁 Oyun Bitti\n\n🔑 Asıl kelime: {real}\n🎭 Farklı kelime: {fake}",
+        "min": "😅 En az 3 kişi lazım!",
     },
     "ru": {
         "choose_lang": "🌍 Выберите язык",
         "players": "👥 Сколько игроков? (минимум 3)",
         "ready": "📱 Все готовы? Телефон у игрока 1",
         "start": "🎮 Начать игру",
-        "show": "👁 Показать слово",
+        "show": "👁 Показать роль",
         "seen": "👁 Видел",
-        "spy": "😈 Ты ШПИОН\n❌ У тебя нет слова",
         "player": "📱 Игрок",
-        "all_seen": "✅ Все увидели слово",
-        "end": "🏁 Завершить игру",
+        "spy": "😈 Ты ШПИОН\n❌ У тебя нет слова",
+        "end": "✅ Все роли просмотрены",
+        "end_btn": "🏁 Завершить игру",
         "restart": "🔁 Новая игра",
-        "summary": "🏁 Результат игры",
-        "min_players": "😅 Нужно минимум 3 игрока!",
+        "summary": "🏁 Игра окончена\n\n🔑 Основное слово: {real}\n🎭 Другое слово: {fake}",
+        "min": "😅 Нужно минимум 3 игрока!",
     },
 }
 
 games = {}
-GAME_MESSAGES = {}
 
-# ================== HELPERS ==================
-
-async def track(uid, msg):
-    GAME_MESSAGES.setdefault(uid, []).append(msg.message_id)
-
-async def clear_game_messages(context, chat_id, uid):
-    for mid in GAME_MESSAGES.get(uid, []):
-        try:
-            await context.bot.delete_message(chat_id, mid)
-        except:
-            pass
-    GAME_MESSAGES[uid] = []
-
-# ================== START ==================
+# ===================== START =====================
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    uid = update.effective_user.id
-    chat_id = update.effective_chat.id
-
-    await clear_game_messages(context, chat_id, uid)
+    uid = update.message.from_user.id
     games.pop(uid, None)
 
     kb = [
@@ -147,52 +127,51 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ],
     ]
 
-    msg = await update.message.reply_text(
+    await update.message.reply_text(
         "🕵️ Spy Game\n\nChoose language 👇",
         reply_markup=InlineKeyboardMarkup(kb),
     )
-    await track(uid, msg)
 
-# ================== LANGUAGE ==================
+# ===================== LANGUAGE =====================
 
 async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    uid = q.from_user.id
     lang = q.data.split("_")[1]
+    uid = q.from_user.id
 
     games[uid] = {
         "lang": lang,
         "state": "players",
+        "messages": [],
     }
 
-    msg = await q.message.reply_text(TEXT[lang]["players"])
-    await track(uid, msg)
+    await q.message.reply_text(TEXT[lang]["players"])
 
-# ================== PLAYERS ==================
+# ===================== PLAYERS =====================
 
 async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    uid = update.effective_user.id
+    uid = update.message.from_user.id
     game = games.get(uid)
     if not game or game["state"] != "players":
         return
 
     try:
-        players = int(update.message.text)
+        n = int(update.message.text)
     except:
         return
 
     lang = game["lang"]
-    if players < 3:
-        await update.message.reply_text(TEXT[lang]["min_players"])
+    if n < 3:
+        await update.message.reply_text(TEXT[lang]["min"])
         return
 
     real, fake = random.choice(FAKE_PAIRS[lang])
-    roles = ["spy"] + ["player"] * (players - 1)
+    roles = ["spy", "fake"] + ["real"] * (n - 2)
     random.shuffle(roles)
 
     game.update({
-        "players": players,
+        "players": n,
         "roles": roles,
         "real": real,
         "fake": fake,
@@ -201,31 +180,29 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     kb = [[InlineKeyboardButton(TEXT[lang]["start"], callback_data="start_game")]]
-    msg = await update.message.reply_text(TEXT[lang]["ready"], reply_markup=InlineKeyboardMarkup(kb))
-    await track(uid, msg)
+    await update.message.reply_text(TEXT[lang]["ready"], reply_markup=InlineKeyboardMarkup(kb))
 
-# ================== GAME FLOW ==================
+# ===================== GAME FLOW =====================
 
 async def start_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     uid = q.from_user.id
     game = games[uid]
-    await show_player(q.message, context, uid)
+    await show_player(q.message, uid)
 
-async def show_player(message, context, uid):
+async def show_player(message, uid):
     game = games[uid]
     lang = game["lang"]
     i = game["current"]
 
-    kb = [[InlineKeyboardButton(TEXT[lang]["show"], callback_data="show_word")]]
-    msg = await message.reply_text(
+    kb = [[InlineKeyboardButton(TEXT[lang]["show"], callback_data="show_role")]]
+    await message.reply_text(
         f"{TEXT[lang]['player']} {i + 1}",
         reply_markup=InlineKeyboardMarkup(kb),
     )
-    await track(uid, msg)
 
-async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def show_role(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     uid = q.from_user.id
@@ -233,71 +210,68 @@ async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = game["lang"]
     i = game["current"]
 
-    text = (
-        TEXT[lang]["spy"]
-        if game["roles"][i] == "spy"
-        else f"🔑 {game['real']}"
-    )
+    role = game["roles"][i]
+    if role == "spy":
+        text = TEXT[lang]["spy"]
+    elif role == "fake":
+        text = f"🔑 {game['fake']}"
+    else:
+        text = f"🔑 {game['real']}"
 
     kb = [[InlineKeyboardButton(TEXT[lang]["seen"], callback_data="seen")]]
-    msg = await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
-    await track(uid, msg)
+    await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
 
 async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     uid = q.from_user.id
     game = games[uid]
+    lang = game["lang"]
+
     game["current"] += 1
 
     if game["current"] >= game["players"]:
-        lang = game["lang"]
-        kb = [[InlineKeyboardButton(TEXT[lang]["end"], callback_data="end_game")]]
-        msg = await q.message.reply_text(TEXT[lang]["all_seen"], reply_markup=InlineKeyboardMarkup(kb))
-        await track(uid, msg)
+        kb = [[InlineKeyboardButton(TEXT[lang]["end_btn"], callback_data="end_game")]]
+        await q.message.reply_text(TEXT[lang]["end"], reply_markup=InlineKeyboardMarkup(kb))
     else:
-        await show_player(q.message, context, uid)
+        await show_player(q.message, uid)
 
-# ================== END GAME ==================
+# ===================== END =====================
 
 async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     uid = q.from_user.id
-    chat_id = q.message.chat_id
-    game = games[uid]
+    game = games.pop(uid)
     lang = game["lang"]
 
-    await clear_game_messages(context, chat_id, uid)
-
-    summary = (
-        f"{TEXT[lang]['summary']}\n\n"
-        f"🔑 کلمه اصلی: {game['real']}\n"
-        f"🎭 کلمه متفاوت: {game['fake']}"
+    await q.message.reply_text(
+        TEXT[lang]["summary"].format(real=game["real"], fake=game["fake"]),
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(TEXT[lang]["restart"], callback_data="restart")]]
+        ),
     )
-
-    kb = [[InlineKeyboardButton(TEXT[lang]["restart"], callback_data="restart")]]
-    msg = await q.message.reply_text(summary, reply_markup=InlineKeyboardMarkup(kb))
-    await track(uid, msg)
 
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    await start(q.message, context)
+    uid = q.from_user.id
+    games.pop(uid, None)
+    await start(q, context)
 
-# ================== MAIN ==================
+# ===================== MAIN =====================
 
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(set_language, pattern="lang_"))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, set_players))
     app.add_handler(CallbackQueryHandler(start_game, pattern="start_game"))
-    app.add_handler(CallbackQueryHandler(show_word, pattern="show_word"))
+    app.add_handler(CallbackQueryHandler(show_role, pattern="show_role"))
     app.add_handler(CallbackQueryHandler(seen, pattern="seen"))
     app.add_handler(CallbackQueryHandler(end_game, pattern="end_game"))
     app.add_handler(CallbackQueryHandler(restart, pattern="restart"))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, set_players))
 
     app.run_polling()
 
