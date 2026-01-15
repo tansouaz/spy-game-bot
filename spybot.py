@@ -246,7 +246,13 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
+
+    uid = q.from_user.id
+    if uid in games:
+        del games[uid]   # پاک‌سازی کامل بازی قبلی
+
     await start(q, context)
+
 
 # ================= MAIN =================
 def main():
