@@ -255,10 +255,29 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
 
 # ================= RESTART =================
+# ================= RESTART (FIXED) =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
-    await start(q, context)
+
+    uid = q.from_user.id
+
+    # پاک‌سازی کامل state بازی قبلی
+    games.pop(uid, None)
+
+    # دوباره پیام انتخاب زبان (مثل /start)
+    kb = [
+        [InlineKeyboardButton("🇮🇷 فارسی", callback_data="lang_fa"),
+         InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
+        [InlineKeyboardButton("🇹🇷 Türkçe", callback_data="lang_tr"),
+         InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")]
+    ]
+
+    await q.message.reply_text(
+        TEXT["en"]["choose"],
+        reply_markup=InlineKeyboardMarkup(kb)
+    )
+
 
 # ================= MAIN =================
 def main():
