@@ -161,6 +161,9 @@ async def show_role(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game = games[uid]
     lang = game["lang"]
 
+    # 👇 این خط خیلی مهمه
+    game["temp_messages"].append(q.message.message_id)
+
     word = game["fake_word"] if game["roles"][game["current"]] == "spy" else game["real_word"]
 
     kb = [[InlineKeyboardButton(TEXT[lang]["seen"], callback_data="seen")]]
@@ -170,6 +173,7 @@ async def show_role(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     game["temp_messages"].append(msg.message_id)
+
 
 # ================= SEEN =================
 async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
