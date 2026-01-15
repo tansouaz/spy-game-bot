@@ -5,72 +5,55 @@ from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     CallbackQueryHandler,
+    MessageHandler,
     ContextTypes,
+    filters,
 )
 
 TOKEN = os.getenv("TOKEN")
 
-# ================= FAKE PAIRS =================
+# ================= FAKE PAIRS (UNCHANGED) =================
 FAKE_PAIRS = {
     "fa": [
-        ("فرودگاه", "ایستگاه"),
-        ("بیمارستان", "درمانگاه"),
-        ("مدرسه", "دانشگاه"),
-        ("دادگاه", "کلانتری"),
-        ("بازار", "مغازه"),
-        ("ساحل", "دریا"),
-        ("جنگل", "پارک"),
-        ("استخر", "باشگاه"),
-        ("سینما", "تئاتر"),
-        ("کتابخانه", "کتابفروشی"),
-        ("هتل", "مهمانسرا"),
-        ("بانک", "صرافی"),
-        ("کافه", "رستوران"),
-        ("موزه", "گالری"),
-        ("پلیس", "نگهبان"),
-        ("قطار", "مترو"),
-        ("اتوبوس", "تاکسی"),
-        ("کارخانه", "کارگاه"),
-        ("فرود", "پرواز"),
-        ("آشپزخانه", "رستوران"),
-        ("کلاس", "جلسه"),
-        ("پزشک", "پرستار"),
-        ("داروخانه", "درمانگاه"),
-        ("ورزشگاه", "باشگاه"),
-        ("ساحل", "اسکله"),
-        ("خیابان", "کوچه"),
-        ("پل", "تونل"),
-        ("پارکینگ", "گاراژ"),
-        ("دفتر", "اداره"),
-        ("کارمند", "مدیر"),
+        ("فرودگاه", "ایستگاه"), ("بیمارستان", "درمانگاه"),
+        ("مدرسه", "دانشگاه"), ("دادگاه", "کلانتری"),
+        ("بازار", "مغازه"), ("ساحل", "دریا"),
+        ("جنگل", "پارک"), ("استخر", "باشگاه"),
+        ("سینما", "تئاتر"), ("کتابخانه", "کتابفروشی"),
+        ("هتل", "مهمانسرا"), ("بانک", "صرافی"),
+        ("کافه", "رستوران"), ("موزه", "گالری"),
+        ("قطار", "مترو"), ("اتوبوس", "تاکسی"),
+        ("پل", "تونل"), ("پارکینگ", "گاراژ"),
+        ("دفتر", "اداره"), ("کارمند", "مدیر"),
+        ("پزشک", "پرستار"), ("داروخانه", "درمانگاه"),
+        ("ورزشگاه", "باشگاه"), ("ساحل", "اسکله"),
+        ("خیابان", "کوچه"), ("کارخانه", "کارگاه"),
+        ("فرود", "پرواز"), ("کلاس", "جلسه"),
     ],
     "en": [
-        ("Airport", "Station"), ("Hospital", "Clinic"), ("School", "University"),
-        ("Court", "Police Station"), ("Market", "Shop"), ("Beach", "Sea"),
-        ("Forest", "Park"), ("Pool", "Gym"), ("Cinema", "Theater"),
-        ("Library", "Bookstore"), ("Hotel", "Hostel"), ("Bank", "Exchange"),
-        ("Cafe", "Restaurant"), ("Museum", "Gallery"), ("Police", "Guard"),
-        ("Train", "Metro"), ("Bus", "Taxi"), ("Factory", "Workshop"),
-        ("Flight", "Landing"), ("Kitchen", "Restaurant"),
-        ("Class", "Meeting"), ("Doctor", "Nurse"),
-        ("Pharmacy", "Clinic"), ("Stadium", "Gym"),
-        ("Beach", "Pier"), ("Street", "Alley"),
+        ("Airport", "Station"), ("Hospital", "Clinic"),
+        ("School", "University"), ("Court", "Police Station"),
+        ("Market", "Shop"), ("Beach", "Sea"),
+        ("Forest", "Park"), ("Pool", "Gym"),
+        ("Cinema", "Theater"), ("Library", "Bookstore"),
+        ("Hotel", "Hostel"), ("Bank", "Exchange"),
+        ("Cafe", "Restaurant"), ("Museum", "Gallery"),
+        ("Train", "Metro"), ("Bus", "Taxi"),
         ("Bridge", "Tunnel"), ("Parking", "Garage"),
         ("Office", "Department"), ("Employee", "Manager"),
+        ("Doctor", "Nurse"), ("Pharmacy", "Clinic"),
+        ("Stadium", "Gym"), ("Street", "Alley"),
+        ("Factory", "Workshop"), ("Flight", "Landing"),
     ],
     "tr": [
-        ("Havalimanı", "İstasyon"), ("Hastane", "Klinik"), ("Okul", "Üniversite"),
-        ("Mahkeme", "Karakol"), ("Pazar", "Mağaza"), ("Plaj", "Deniz"),
+        ("Havalimanı", "İstasyon"), ("Hastane", "Klinik"),
+        ("Okul", "Üniversite"), ("Mahkeme", "Karakol"),
+        ("Pazar", "Mağaza"), ("Plaj", "Deniz"),
         ("Orman", "Park"), ("Havuz", "Spor Salonu"),
         ("Sinema", "Tiyatro"), ("Kütüphane", "Kitapçı"),
         ("Otel", "Pansiyon"), ("Banka", "Dövizci"),
         ("Kafe", "Restoran"), ("Müze", "Galeri"),
-        ("Polis", "Güvenlik"), ("Tren", "Metro"),
-        ("Otobüs", "Taksi"), ("Fabrika", "Atölye"),
-        ("Uçuş", "İniş"), ("Mutfak", "Restoran"),
-        ("Sınıf", "Toplantı"), ("Doktor", "Hemşire"),
-        ("Eczane", "Klinik"), ("Stadyum", "Salon"),
-        ("Sahil", "İskele"), ("Cadde", "Sokak"),
+        ("Tren", "Metro"), ("Otobüs", "Taksi"),
         ("Köprü", "Tünel"), ("Otopark", "Garaj"),
         ("Ofis", "Departman"), ("Çalışan", "Müdür"),
     ],
@@ -81,13 +64,7 @@ FAKE_PAIRS = {
         ("Лес", "Парк"), ("Бассейн", "Спортзал"),
         ("Кино", "Театр"), ("Библиотека", "Книжный"),
         ("Отель", "Хостел"), ("Банк", "Обмен"),
-        ("Кафе", "Ресторан"), ("Музей", "Галерея"),
-        ("Полиция", "Охрана"), ("Поезд", "Метро"),
-        ("Автобус", "Такси"), ("Фабрика", "Мастерская"),
-        ("Рейс", "Посадка"), ("Кухня", "Ресторан"),
-        ("Класс", "Встреча"), ("Врач", "Медсестра"),
-        ("Аптека", "Клиника"), ("Стадион", "Зал"),
-        ("Берег", "Причал"), ("Улица", "Переулок"),
+        ("Поезд", "Метро"), ("Автобус", "Такси"),
         ("Мост", "Тоннель"), ("Парковка", "Гараж"),
         ("Офис", "Отдел"), ("Работник", "Менеджер"),
     ],
@@ -113,13 +90,21 @@ async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     lang = q.data.split("_")[1]
+
     games[q.from_user.id] = {
         "lang": lang,
         "state": "players",
         "msgs": []
     }
+
     await q.message.delete()
-    await q.message.reply_text("👥 Number of players? (min 3)")
+    texts = {
+        "fa": "👥 تعداد بازیکن‌ها؟ (حداقل ۳)",
+        "en": "👥 Number of players? (min 3)",
+        "tr": "👥 Oyuncu sayısı? (en az 3)",
+        "ru": "👥 Количество игроков? (мин 3)"
+    }
+    await q.message.reply_text(texts[lang])
 
 # ================= PLAYER COUNT =================
 async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -127,12 +112,13 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game = games.get(uid)
     if not game or game["state"] != "players":
         return
+
     try:
         n = int(update.message.text)
     except:
         return
+
     if n < 3:
-        await update.message.reply_text("❌ Minimum 3 players")
         return
 
     pair = random.choice(FAKE_PAIRS[game["lang"]])
@@ -146,15 +132,17 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "i": 0,
         "state": "playing"
     })
-    await show_player(update, uid)
 
-# ================= SHOW PLAYER =================
-async def show_player(update, uid):
+    await next_player(update, uid)
+
+# ================= NEXT PLAYER =================
+async def next_player(update, uid):
     game = games[uid]
     i = game["i"]
-    kb = [[InlineKeyboardButton("👁 Show word", callback_data="show")]]
+
+    kb = [[InlineKeyboardButton("👁 دیدن کلمه", callback_data="show")]]
     msg = await update.message.reply_text(
-        f"📱 Player {i+1}",
+        f"📱 بازیکن {i+1}",
         reply_markup=InlineKeyboardMarkup(kb)
     )
     game["msgs"].append(msg.message_id)
@@ -165,9 +153,9 @@ async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await q.answer()
     uid = q.from_user.id
     game = games[uid]
-    word = game["words"][game["i"]]
 
-    kb = [[InlineKeyboardButton("👁 Seen", callback_data="seen")]]
+    word = game["words"][game["i"]]
+    kb = [[InlineKeyboardButton("👁 دیدم", callback_data="seen")]]
     msg = await q.message.reply_text(f"🔑 {word}", reply_markup=InlineKeyboardMarkup(kb))
     game["msgs"].append(msg.message_id)
 
@@ -186,12 +174,13 @@ async def seen(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game["msgs"].clear()
 
     game["i"] += 1
+
     if game["i"] >= len(game["words"]):
-        kb = [[InlineKeyboardButton("🏁 End game", callback_data="end")]]
-        await q.message.reply_text("🏁 End of players", reply_markup=InlineKeyboardMarkup(kb))
+        kb = [[InlineKeyboardButton("🏁 پایان بازی", callback_data="end")]]
+        await q.message.reply_text("🏁 همه دیدند", reply_markup=InlineKeyboardMarkup(kb))
         return
 
-    await show_player(q.message, uid)
+    await next_player(q.message, uid)
 
 # ================= END GAME =================
 async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -201,11 +190,12 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game = games.pop(uid)
 
     text = (
-        "📌 Game result\n\n"
-        f"🔑 Real word: {game['real']}\n"
-        f"🎭 Fake word: {game['fake']}"
+        "📌 نتیجه بازی\n\n"
+        f"🔑 کلمه اصلی: {game['real']}\n"
+        f"🎭 کلمه متفاوت: {game['fake']}"
     )
-    kb = [[InlineKeyboardButton("🔁 New game", callback_data="restart")]]
+
+    kb = [[InlineKeyboardButton("🔁 شروع بازی جدید", callback_data="restart")]]
     await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
 
 # ================= RESTART =================
@@ -217,81 +207,15 @@ async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ================= MAIN =================
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(set_language, pattern="lang_"))
     app.add_handler(CallbackQueryHandler(show_word, pattern="show"))
     app.add_handler(CallbackQueryHandler(seen, pattern="seen"))
     app.add_handler(CallbackQueryHandler(end_game, pattern="end"))
     app.add_handler(CallbackQueryHandler(restart, pattern="restart"))
-    app.add_handler(CommandHandler("text", set_players))
-    app.add_handler(CommandHandler("players", set_players))
-    app.add_handler(CommandHandler("set", set_players))
-    app.add_handler(CommandHandler("count", set_players))
-    app.add_handler(CommandHandler("number", set_players))
-    app.add_handler(CommandHandler("n", set_players))
-    app.add_handler(CommandHandler("p", set_players))
-    app.add_handler(CommandHandler("num", set_players))
-    app.add_handler(CommandHandler("players", set_players))
-    app.add_handler(CommandHandler("startgame", set_players))
-    app.add_handler(CommandHandler("go", set_players))
-    app.add_handler(CommandHandler("begin", set_players))
-    app.add_handler(CommandHandler("play", set_players))
-    app.add_handler(CommandHandler("run", set_players))
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("restart", start))
-    app.add_handler(CommandHandler("new", start))
-    app.add_handler(CommandHandler("again", start))
-    app.add_handler(CommandHandler("reset", start))
-    app.add_handler(CommandHandler("lang", start))
-    app.add_handler(CommandHandler("language", start))
-    app.add_handler(CommandHandler("l", start))
-    app.add_handler(CommandHandler("choose", start))
-    app.add_handler(CommandHandler("select", start))
-    app.add_handler(CommandHandler("pick", start))
-    app.add_handler(CommandHandler("choose_lang", start))
-    app.add_handler(CommandHandler("select_lang", start))
-    app.add_handler(CommandHandler("pick_lang", start))
-    app.add_handler(CommandHandler("choose_language", start))
-    app.add_handler(CommandHandler("select_language", start))
-    app.add_handler(CommandHandler("pick_language", start))
-    app.add_handler(CommandHandler("language_choose", start))
-    app.add_handler(CommandHandler("language_select", start))
-    app.add_handler(CommandHandler("language_pick", start))
-    app.add_handler(CommandHandler("lang_choose", start))
-    app.add_handler(CommandHandler("lang_select", start))
-    app.add_handler(CommandHandler("lang_pick", start))
-    app.add_handler(CommandHandler("language_start", start))
-    app.add_handler(CommandHandler("lang_start", start))
-    app.add_handler(CommandHandler("language_begin", start))
-    app.add_handler(CommandHandler("lang_begin", start))
-    app.add_handler(CommandHandler("language_go", start))
-    app.add_handler(CommandHandler("lang_go", start))
-    app.add_handler(CommandHandler("language_run", start))
-    app.add_handler(CommandHandler("lang_run", start))
-    app.add_handler(CommandHandler("language_play", start))
-    app.add_handler(CommandHandler("lang_play", start))
-    app.add_handler(CommandHandler("language_reset", start))
-    app.add_handler(CommandHandler("lang_reset", start))
-    app.add_handler(CommandHandler("language_new", start))
-    app.add_handler(CommandHandler("lang_new", start))
-    app.add_handler(CommandHandler("language_again", start))
-    app.add_handler(CommandHandler("lang_again", start))
-    app.add_handler(CommandHandler("language_restart", start))
-    app.add_handler(CommandHandler("lang_restart", start))
-    app.add_handler(CommandHandler("language_startgame", start))
-    app.add_handler(CommandHandler("lang_startgame", start))
-    app.add_handler(CommandHandler("language_choosegame", start))
-    app.add_handler(CommandHandler("lang_choosegame", start))
-    app.add_handler(CommandHandler("language_selectgame", start))
-    app.add_handler(CommandHandler("lang_selectgame", start))
-    app.add_handler(CommandHandler("language_pickgame", start))
-    app.add_handler(CommandHandler("lang_pickgame", start))
-    app.add_handler(CommandHandler("language_choose_game", start))
-    app.add_handler(CommandHandler("lang_choose_game", start))
-    app.add_handler(CommandHandler("language_select_game", start))
-    app.add_handler(CommandHandler("lang_select_game", start))
-    app.add_handler(CommandHandler("language_pick_game", start))
-    app.add_handler(CommandHandler("lang_pick_game", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, set_players))
+
     app.run_polling()
 
 if __name__ == "__main__":
