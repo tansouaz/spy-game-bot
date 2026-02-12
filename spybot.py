@@ -176,7 +176,11 @@ async def set_players(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     real, fake = random.choice(FAKE_PAIRS[game["lang"]])
-    fake_count = random.randint(1, n // 2)
+    if n>4 :
+     fake_count = random.randint(1, n // 2)
+    else :
+     fake_count = 1
+     
 
     words = [real]*(n-fake_count) + [fake]*fake_count
     random.shuffle(words)
@@ -214,9 +218,17 @@ async def show_word(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await q.message.delete()
 
     word = game["words"][game["i"]]
+
+    # ✅ تشخیص نقش
+    if word == game["real"]:
+        role_label = TEXT[lang]["real"]
+    else:
+        role_label = TEXT[lang]["fake"]
+
     kb = [[InlineKeyboardButton(TEXT[lang]["seen"], callback_data="seen")]]
+
     await q.message.reply_text(
-        f"🔑 {word}",
+        f"{role_label} {word}",
         reply_markup=InlineKeyboardMarkup(kb)
     )
 
