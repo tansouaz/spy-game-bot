@@ -29,7 +29,18 @@ FAKE_PAIRS = {
         ("سینما","پرده"),("کتاب","دفتر"),("خانه","آپارتمان"),
         ("مسجد","حسینیه"),("مدرس","استاد"),("دانش‌آموز","دانشجو"),
         ("سالن","اتاق"),("اتاق","راهرو"),("پادگان","پایگاه"),
-        ("بندر","اسکله"),("کارگاه","سوله"),
+        ("بندر","اسکله"),("کارگاه","سوله"),("اینستاگرام","تیک‌تاک"),
+        ("گوشی","تبلت"),("لپ‌تاپ","کامپیوتر"),("نتفلیکس","یوتیوب"),
+        ("پیتزا","برگر"),("دیجی","خواننده"),("کنسرت","فستیوال"),
+        ("برنامه‌نویس","هکر"),("کریپتو","بورس"),("بیت‌کوین","اتریوم"),
+        ("هوش مصنوعی","ربات"),("گیم","بازی"),("پابجی","فورتنایت"),("مارول","دی‌سی"),
+        ("زومبی","خون‌آشام"),("انیمه","کارتون"),("میم","جوک"),("استریمر","گیمر")
+        ,("باشگاه","تمرین"),("ماشین","موتور"),("اوبر","تاکسی اینترنتی"),("جزیره","ساحل"),
+        ("کمپ","کوهنوردی"),("مهمانی","کلاب"),("فالوور","سابسکرایبر"),("ایموجی","استیکر"),
+        ("فیلتر","افکت"),("پارتی","جشن"),("کافه","کافی‌شاپ"),("دانشجو","شاگرد"),("استاد","معلم"),
+        ("پلی‌استیشن","ایکس‌باکس"),("دیسکو","کلاب"),("عکس","سلفی"),("فیلم","سریال"),("پول","دلار"),
+        ("سفر","مسافرت"),("خانه","ویلا"),("مدیر","رئیس"),
+
     ],
     "en": [
         ("Airport","Station"),("Hospital","Clinic"),("School","University"),
@@ -43,7 +54,19 @@ FAKE_PAIRS = {
         ("Office","Department"),("Employee","Manager"),("House","Apartment"),
         ("Mosque","Shrine"),("Student","Teacher"),("Class","Room"),
         ("Room","Hall"),("Base","Camp"),("Port","Dock"),
-        ("Library","Archive"),("Cinema","Screen"),
+        ("Library","Archive"),("Cinema","Screen"),("Instagram","TikTok"),
+        ("iPhone","Samsung"),("Laptop","Tablet"),("Netflix","YouTube"),
+        ("Pizza","Burger"),("Snapchat","Telegram"),("Discord","Skype"),
+        ("PlayStation","Xbox"),("PUBG","Fortnite"),("Coffee","Energy drink"),
+        ("Selfie","Photo"),("Influencer","Blogger"),("DJ","Producer"),
+        ("Rap","HipHop"),("Concert","Festival"),("Hacker","Programmer"),
+        ("Crypto","Stock"),("Bitcoin","Ethereum"),("AI","Robot"),("Drone","Helicopter"),
+        ("Zombie","Vampire"),("Marvel","DC"),("Spider-Man","Batman"),("Anime","Cartoon"),
+        ("Meme","Joke"),("Stream","Video"),("Club","Party"),("Camping","Hiking"),
+        ("Beach","Island"),("DJ","Singer"),("Gamer","Streamer"),("Online","Offline"),
+        ("Follower","Subscriber"),("Emoji","Sticker"),("Filter","Effect"),("Gym","Workout"),
+        ("Car","Motorcycle"),("Uber","Taxi"),("Mall","Supermarket"),
+
     ],
     "tr": [
         ("Havalimanı","İstasyon"),("Hastane","Klinik"),("Okul","Üniversite"),
@@ -57,6 +80,15 @@ FAKE_PAIRS = {
         ("Ofis","Departman"),("Çalışan","Müdür"),("Ev","Apartman"),
         ("Öğrenci","Öğretmen"),("Sınıf","Oda"),("Oda","Salon"),
         ("Liman","İskele"),("Sinema","Perde"),
+        ("Instagram","TikTok"),("Telefon","Tablet"),("Laptop","Bilgisayar"),(
+            "Netflix","YouTube"),("Pizza","Burger"),("DJ","Şarkıcı"),("Konser","Festival"),
+        ("Programcı","Hacker"),("Kripto","Borsa"),("Bitcoin","Ethereum"),("Yapay Zeka","Robot"),
+        ("Oyun","Game"),("PUBG","Fortnite"),("Marvel","DC"),("Zombi","Vampir"),("Anime","Çizgi Film"),
+        ("Mizah","Şaka"),("Yayıncı","Gamer"),("Spor Salonu","Fitness"),("Araba","Motor"),("Uber","Taksi"),
+        ("Ada","Plaj"),("Kamp","Dağcılık"),("Parti","Kulüp"),("Takipçi","Abone"),("Emoji","Sticker"),
+        ("Filtre","Efekt"),("Fotoğraf","Selfie"),("Film","Dizi"),("Para","Dolar"),("Seyahat","Tatil"),
+        ("Ev","Villa"),("Müdür","Patron"),
+
     ],
     "ru": [
         ("Аэропорт","Станция"),("Больница","Клиника"),("Школа","Университет"),
@@ -70,6 +102,14 @@ FAKE_PAIRS = {
         ("Офис","Отдел"),("Работник","Менеджер"),("Дом","Квартира"),
         ("Студент","Преподаватель"),("Комната","Зал"),
         ("Порт","Причал"),("Кино","Экран"),
+        ("Instagram","TikTok"),("Телефон","Планшет"),("Ноутбук","Компьютер"),
+        ("Netflix","YouTube"),("Пицца","Бургер"),("DJ","Певец"),("Концерт","Фестиваль"),(
+            "Программист","Хакер"),("Крипто","Биржа"),("Биткоин","Эфириум"),("ИИ","Робот"),
+        ("Игра","Гейм"),("PUBG","Fortnite"),("Marvel","DC"),("Зомби","Вампир"),("Аниме","Мультфильм"),
+        ("Мем","Шутка"),("Стример","Геймер"),("Фитнес","Спортзал"),("Машина","Мотоцикл"),
+        ("Uber","Такси"),("Остров","Пляж"),("Кемпинг","Поход"),("Вечеринка","Клуб"),("Подписчик","Фолловер"),
+        ("Эмодзи","Стикер"),("Фильтр","Эффект"),("Фото","Селфи"),("Фильм","Сериал"),("Деньги","Доллар"),
+        ("Путешествие","Отпуск"),("Дом","Вилла"),("Директор","Босс"),
     ],
 }
 
