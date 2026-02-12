@@ -288,6 +288,31 @@ async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await q.message.reply_text(TEXT[lang]["players"])
 
 
+# ================= HOW TO PLAY =================
+async def how_to_play(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = (
+        "🎮 How to Play:\n\n"
+        "1️⃣ Pick a language\n"
+        "2️⃣ Choose number of players\n"
+        "3️⃣ Player taps 'Show Word'\n"
+        "4️⃣ See the word\n"
+        "5️⃣ Tap 'Seen'\n"
+        "6️⃣ Pass the phone to the next player\n"
+        "7️⃣ After everyone sees, find the spy!"
+    )
+    await update.message.reply_text(text)
+    
+    # ================= WHAT IS GAME =================
+async def whats_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = (
+        "🕵️ Spy Game\n\n"
+        "A fun party game for friends!\n"
+        "Everyone gets a word… but one or more players get a different one 🤫\n"
+        "Talk, guess, and find the spy before they fool you! 👀🔥"
+    )
+    await update.message.reply_text(text)
+
+    
 # ================= MAIN =================
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
@@ -298,6 +323,9 @@ def main():
     app.add_handler(CallbackQueryHandler(seen, pattern="seen"))
     app.add_handler(CallbackQueryHandler(end_game, pattern="end"))
     app.add_handler(CallbackQueryHandler(restart, pattern="restart"))
+    app.add_handler(CommandHandler("whatsgame", whats_game))
+    app.add_handler(CommandHandler("howtoplay", how_to_play))
+
     app.run_polling()
 
 if __name__ == "__main__":
