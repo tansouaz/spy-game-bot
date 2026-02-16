@@ -364,30 +364,17 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     game["state"] = "finished"
 
 # ================= RESTART =================
-# ================= RESTART (REAL FIX) =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
 
     uid = q.from_user.id
+    lang = games[uid]["lang"]
 
-    # گرفتن زبان از callback message قبل از حذف state
-    lang = games.get(uid, {}).get("lang")
-
-    # اگر end_game قبلاً pop کرده بود
-    if not lang:
-        # زبان رو از context نگه میداریم
-        lang = context.user_data.get("lang", "en")
-
-    # ساخت state جدید با همون زبان
     games[uid] = {
         "lang": lang,
         "state": "players",
     }
-
-    # ذخیره زبان در user_data برای اطمینان
-    context.user_data["lang"] = lang
-
     await q.message.reply_text(TEXT[lang]["players"])
 
 
