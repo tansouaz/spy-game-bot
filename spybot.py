@@ -17,133 +17,48 @@ TOKEN = os.getenv("TOKEN")
 # =========================
 FAKE_PAIRS = {
     "fa": [
-       ("فرودگاه","ترمینال"),
-    ("بیمارستان","اورژانس"),
-    ("مدرسه","دبیرستان"),
-    ("دادگاه","زندان"),
-    ("بازار","پاساژ"),
-    ("ساحل","اسکله"),
-    ("جنگل","کویر"),
-    ("استخر","دریاچه"),
-    ("سینما","آمفی‌تئاتر"),
-    ("کتابخانه","آرشیو"),
-    ("هتل","هاستل"),
-    ("بانک","خودپرداز"),
-    ("کافه","کافی‌شاپ"),
-    ("موزه","نمایشگاه"),
-    ("قطار","تراموا"),
-    ("اتوبوس","مینی‌بوس"),
-    ("کارخانه","کارگاه"),
-    ("آشپزخانه","آشپزخانه صنعتی"),
-    ("پزشک","جراح"),
-    ("داروخانه","آزمایشگاه"),
-    ("ورزشگاه","استادیوم"),
-    ("پل","روگذر"),
-    ("خیابان","بلوار"),
-    ("پارکینگ","پارکینگ طبقاتی"),
-    ("دفتر","شرکت"),
-    ("کارمند","کارآموز"),
-    ("بازارچه","مال"),
-    ("سینما","سریال"),
-    ("کتاب","مجله"),
-    ("خانه","ویلا"),
-    ("مسجد","کلیسا"),
-    ("مدرس","سخنران"),
-    ("دانش‌آموز","هنرجو"),
-    ("سالن","سالن همایش"),
-    ("اتاق","سوئیت"),
-    ("پادگان","قرارگاه"),
-    ("بندر","اسکله"),
-    ("کارگاه","کارخانه"),
-    ("اینستاگرام","تیک‌تاک"),
-    ("گوشی","موبایل"),
-    ("لپ‌تاپ","نوت‌بوک"),
-    ("نتفلیکس","فیلیمو"),
-    ("پیتزا","ساندویچ"),
-    ("دیجی","پرودوسر"),
-    ("کنسرت","شو"),
-    ("برنامه‌نویس","توسعه‌دهنده"),
-    ("کریپتو","فارکس"),
-    ("بیت‌کوین","دوج‌کوین"),
-    ("هوش مصنوعی","یادگیری ماشین"),
-    ("گیم","استریم"),
-    ("پابجی","کال‌آف‌دیوتی"),
-    ("مارول","دی‌سی"),
-    ("زومبی","هیولا"),
-    ("انیمه","مانگا"),
-    ("میم","ترول"),
-    ("استریمر","یوتیوبر"),
-    ("باشگاه","فیتنس"),
-    ("ماشین","خودرو"),
-    ("اوبر","اسنپ"),
-    ("جزیره","شبه‌جزیره"),
-    ("کمپ","اردو"),
-    ("مهمانی","جشن"),
-    ("فالوور","دنبال‌کننده"),
-    ("ایموجی","استیکر"),
-    ("فیلتر","پریست"),
-    ("پارتی","کلاب"),
-    ("کافه","لانژ"),
-    ("دانشجو","فارغ‌التحصیل"),
-    ("استاد","پروفسور"),
-    ("پلی‌استیشن","ایکس‌باکس"),
-    ("دیسکو","بار"),
-    ("عکس","ویدیو"),
-    ("فیلم","مستند"),
-    ("پول","سکه"),
-    ("سفر","گردش"),
-    ("خانه","آپارتمان"),
-    ("مدیر","سرپرست"),
 
+    # 🍕 غذا (۳۰ جفت)
+    ("پیتزا","برگر"),("چلوکباب","جوجه‌کباب"),("قره‌سبزی","قیمه"),("کوکو","کتلت"),("آبگوشت","حلیم"),("ساندویچ","فلافل"),("پفک","چیپس"),("بستنی","ژله"),("نوشابه","دلستر"),("قهوه","چای"),("دوغ","آبمیوه"),("شکلات","بیسکویت"),("کیک","دسر"),("سیب‌زمینی سرخ‌کرده","پاپ‌کورن"),("لازانیا","ماکارونی"),("همبرگر","هات‌داگ"),("آش","سوپ"),("کباب","خوراک"),("املت","نیمرو"),("عدسی","لوبیا"),("کله‌پاچه","سیرابی"),("سمبوسه","پیراشکی"),("سالاد","ماست"),("خورشت","خوراک مرغ"),("شیر","شیرکاکائو"),("چلو","پلو"),("زرشک‌پلو","باقالی‌پلو"),("کشک بادمجان","میرزاقاسمی"),("سوسیس","کالباس"),("چیزکیک","کاپ‌کیک"),
+
+    # 🎉 مهمونی و پارتی (۳۰ جفت)
+    ("مهمانی","دورهمی"),("پارتی","جشن"),("عروسی","نامزدی"),("تولد","سالگرد"),("کلاب","کافه"),("آهنگ","پلی‌لیست"),("دیجی","خواننده"),("رقص","دست‌زدن"),("هدیه","کادو"),("عکس","استوری"),("لباس مجلسی","کت‌وشلوار"),("کفش رسمی","کتونی"),("آرایش","عطر"),("میکاپ","مدل مو"),("شمع","بادکنک"),("کیک تولد","دسر"),("خنده","شوخی"),("بازی گروهی","چالش"),("فیلم گرفتن","عکس گرفتن"),("دعوت","خبر دادن"),("شب‌نشینی","پیک‌نیک"),("گپ","حرف زدن"),("سلفی","عکس دسته‌جمعی"),("فشفشه","نورپردازی"),("رقص دو نفره","رقص گروهی"),("سورپرایز","غافلگیری"),("پخش زنده","فیلم گرفتن"),("موزیک بلند","موزیک ملایم"),("چیدمان","دکور"),("میز شام","میز مزه"),
+
+    # 😂 کل‌کل و خنده‌دار (۳۰ جفت)
+    ("شوهر","داماد"),("نامزد","خواستگار"),("دوست","رفیق"),("داداش","پسرخاله"),("مادرشوهر","عمه"),("غر زدن","حرف زدن"),("ناز","لوس‌بازی"),("رئیس","مدیر"),("همکار","شریک"),("همسایه","صاحبخانه"),("آنلاین","در دسترس"),("چت","تماس"),("خواب","استراحت"),("پشه","مگس"),("لاکچری","مجلسی"),("پز دادن","ژست گرفتن"),("عصبانی","اخمو"),("آروم","ساکت"),("شیطون","بازیگوش"),("باهوش","زرنگ"),("حسود","کنجکاو"),("خسیس","حسابگر"),("پررو","راحت"),("بدقول","دیررس"),("خوشتیپ","مرتب"),("اهل حال","اهل کار"),("خوش‌اخلاق","مودب"),("بامزه","شوخ"),("کم‌حرف","ساکت"),("پر انرژی","فعال"),
+
+    # 🚗 زندگی روزمره (۳۰ جفت)
+    ("ماشین","شاسی‌بلند"),("موتور","دوچرخه"),("اوبر","اسنپ"),("پول نقد","کارت"),("خرید","سفارش"),("سفر","مسافرت"),("کمپ","پیک‌نیک"),("خانه","ویلا"),("آپارتمان","سوئیت"),("مغازه","سوپرمارکت"),("پارک","شهربازی"),("استخر","دریاچه"),("سینما","کنسرت"),("تلویزیون","لپتاپ"),("گوشی","تبلت"),("شارژر","پاوربانک"),("لباس","کفش"),("ساعت","عینک"),("طلا","نقره"),("عروسی","تولد"),("صبحانه","ناهار"),("شام","میان‌وعده"),("باشگاه","استخر"),("کتاب","مجله"),("فیلم","سریال"),("فوتبال","والیبال"),("چای عصرانه","قهوه عصر"),("کار","شغل"),("مدیر","کارمند"),("دانشجو","دانش‌آموز"),
 
     ],
     "en": [
-        ("Airport","Station"),("Hospital","Clinic"),("School","University"),
-        ("Court","Police"),("Market","Shop"),("Beach","Sea"),
-        ("Forest","Park"),("Pool","Gym"),("Cinema","Theater"),
-        ("Library","Bookstore"),("Hotel","Hostel"),("Bank","Exchange"),
-        ("Cafe","Restaurant"),("Museum","Gallery"),("Train","Metro"),
-        ("Bus","Taxi"),("Factory","Workshop"),("Kitchen","Restaurant"),
-        ("Doctor","Nurse"),("Pharmacy","Clinic"),("Stadium","Gym"),
-        ("Bridge","Tunnel"),("Street","Alley"),("Parking","Garage"),
-        ("Office","Department"),("Employee","Manager"),("House","Apartment"),
-        ("Mosque","Shrine"),("Student","Teacher"),("Class","Room"),
-        ("Room","Hall"),("Base","Camp"),("Port","Dock"),
-        ("Library","Archive"),("Cinema","Screen"),("Instagram","TikTok"),
-        ("iPhone","Samsung"),("Laptop","Tablet"),("Netflix","YouTube"),
-        ("Pizza","Burger"),("Snapchat","Telegram"),("Discord","Skype"),
-        ("PlayStation","Xbox"),("PUBG","Fortnite"),("Coffee","Energy drink"),
-        ("Selfie","Photo"),("Influencer","Blogger"),("DJ","Producer"),
-        ("Rap","HipHop"),("Concert","Festival"),("Hacker","Programmer"),
-        ("Crypto","Stock"),("Bitcoin","Ethereum"),("AI","Robot"),("Drone","Helicopter"),
-        ("Zombie","Vampire"),("Marvel","DC"),("Spider-Man","Batman"),("Anime","Cartoon"),
-        ("Meme","Joke"),("Stream","Video"),("Club","Party"),("Camping","Hiking"),
-        ("Beach","Island"),("DJ","Singer"),("Gamer","Streamer"),("Online","Offline"),
-        ("Follower","Subscriber"),("Emoji","Sticker"),("Filter","Effect"),("Gym","Workout"),
-        ("Car","Motorcycle"),("Uber","Taxi"),("Mall","Supermarket"),
+    # 🍕 FOOD (30 pairs)
+    ("Pizza","Burger"),("Steak","BBQ"),("Tacos","Burrito"),("Pasta","Lasagna"),("Fries","Onion rings"),("Hotdog","Sandwich"),("Sushi","Ramen"),("Donut","Cupcake"),("Cake","Brownie"),("Ice cream","Milkshake"),("Coffee","Iced coffee"),("Tea","Latte"),("Energy drink","Soda"),("Beer","Cocktail"),("Wine","Champagne"),("Chips","Nachos"),("Popcorn","Pretzels"),("Pancakes","Waffles"),("Bacon","Sausage"),("Omelet","Scrambled eggs"),("Salad","Coleslaw"),("Cheesecake","Apple pie"),("Chocolate","Candy"),("Peanut butter","Nutella"),("Mac & cheese","Grilled cheese"),("Fried chicken","Chicken wings"),("BBQ sauce","Ketchup"),("Smoothie","Juice"),("Milk","Chocolate milk"),("Brunch","Dinner"),
+
+    # 🎉 PARTY MODE (30 pairs)
+    ("Party","Get-together"),("Birthday","Anniversary"),("Wedding","Engagement"),("Club","Bar"),("DJ","Singer"),("Playlist","Mixtape"),("Selfie","Group photo"),("Dress up","Casual wear"),("High heels","Sneakers"),("Makeup","Perfume"),("Gift","Surprise"),("Dance","Vibes"),("Loud music","Chill music"),("Afterparty","Pre-game"),("Game night","Movie night"),("BBQ night","House party"),("Pool party","Beach party"),("Girls night","Boys night"),("Shots","Beer pong"),("Red carpet","VIP"),("Snap","Story"),("Live","Reel"),("Glow up","Makeover"),("Decor","Lights"),("Cake cutting","Toast speech"),("Late night","All-nighter"),("Dress code","Theme"),("Dance floor","VIP section"),("Hangout","Meet-up"),("Sleepover","Road trip"),
+
+    # 😂 FUN & FRIEND DRAMA (30 pairs)
+    ("Boyfriend","Crush"),("Girlfriend","Date"),("Best friend","Close friend"),("Roommate","Neighbor"),("Boss","Manager"),("Tease","Roast"),("Flirt","Compliment"),("Ghosting","Ignoring"),("Drama","Chaos"),("Lazy","Chill"),("Moody","Quiet"),("Savage","Sassy"),("Boujee","Fancy"),("Messy","Clumsy"),("Late","Fashionably late"),("Gym bro","Fitness freak"),("Party animal","Night owl"),("Hopeless romantic","Player"),("Ex","Situationship"),("Texting","Calling"),("Blocked","Muted"),("Screenshot","Forwarded"),("Jealous","Curious"),("Secret","Surprise"),("Flexing","Showing off"),("Glow up","Level up"),("Overthinking","Daydreaming"),("Loud","Extra"),("Low-key","Private"),("Hangry","Grumpy"),
+
+    # 🚗 DAILY LIFE (30 pairs)
+    ("Car","SUV"),("Bike","Scooter"),("Uber","Lyft"),("Cash","Credit card"),("Shopping","Ordering"),("Vacation","Trip"),("Camping","Picnic"),("Apartment","House"),("Mall","Supermarket"),("Park","Amusement park"),("Pool","Beach"),("Cinema","Concert"),("TV","Laptop"),("Phone","Tablet"),("Charger","Power bank"),("Watch","Sunglasses"),("Gold","Silver"),("Breakfast","Brunch"),("Lunch","Dinner"),("Workout","Training"),("Book","Magazine"),("Movie","Series"),("Soccer","Basketball"),("Tea time","Coffee break"),("Job","Career"),("Student","Intern"),("Office","Studio"),("Meeting","Hangout"),("Morning person","Night owl"),("Alarm","Reminder"),
 
     ],
     "tr": [
-        ("Havalimanı","İstasyon"),("Hastane","Klinik"),("Okul","Üniversite"),
-        ("Mahkeme","Karakol"),("Pazar","Mağaza"),("Plaj","Deniz"),
-        ("Orman","Park"),("Havuz","Spor Salonu"),("Sinema","Tiyatro"),
-        ("Kütüphane","Kitapçı"),("Otel","Pansiyon"),("Banka","Dövizci"),
-        ("Kafe","Restoran"),("Müze","Galeri"),("Tren","Metro"),
-        ("Otobüs","Taksi"),("Fabrika","Atölye"),("Mutfak","Restoran"),
-        ("Doktor","Hemşire"),("Eczane","Klinik"),("Stadyum","Salon"),
-        ("Köprü","Tünel"),("Cadde","Sokak"),("Otopark","Garaj"),
-        ("Ofis","Departman"),("Çalışan","Müdür"),("Ev","Apartman"),
-        ("Öğrenci","Öğretmen"),("Sınıf","Oda"),("Oda","Salon"),
-        ("Liman","İskele"),("Sinema","Perde"),
-        ("Instagram","TikTok"),("Telefon","Tablet"),("Laptop","Bilgisayar"),(
-            "Netflix","YouTube"),("Pizza","Burger"),("DJ","Şarkıcı"),("Konser","Festival"),
-        ("Programcı","Hacker"),("Kripto","Borsa"),("Bitcoin","Ethereum"),("Yapay Zeka","Robot"),
-        ("Oyun","Game"),("PUBG","Fortnite"),("Marvel","DC"),("Zombi","Vampir"),("Anime","Çizgi Film"),
-        ("Mizah","Şaka"),("Yayıncı","Gamer"),("Spor Salonu","Fitness"),("Araba","Motor"),("Uber","Taksi"),
-        ("Ada","Plaj"),("Kamp","Dağcılık"),("Parti","Kulüp"),("Takipçi","Abone"),("Emoji","Sticker"),
-        ("Filtre","Efekt"),("Fotoğraf","Selfie"),("Film","Dizi"),("Para","Dolar"),("Seyahat","Tatil"),
-        ("Ev","Villa"),("Müdür","Patron"),
 
+    # 🍕 YEMEK (30 pairs)
+    ("Kebap","Lahmacun"),("Döner","Tantuni"),("Mantı","Gözleme"),("Pizza","Burger"),("Köfte","Sucuk"),("Menemen","Omlet"),("Pide","Poğaça"),("Baklava","Künefe"),("Dondurma","Sütlaç"),("Ayran","Şalgam"),("Çay","Kahve"),("Türk kahvesi","Filtre kahve"),("Enerji içeceği","Kola"),("Cips","Kraker"),("Çikolata","Bisküvi"),("Simit","Açma"),("Tost","Sandviç"),("Balık ekmek","Midye"),("Kumpir","Mısır"),("Lokum","Şeker"),("Tatlı","Pasta"),("Sucuklu yumurta","Sahanda yumurta"),("Mercimek çorbası","Ezogelin"),("Adana","Urfa"),("Kokoreç","Ciğer"),("Pilav","Bulgur"),("Fırın makarna","Spagetti"),("Salata","Meze"),("Hamburger","Islak hamburger"),("Nargile","Çekirdek"),
+
+    # 🎉 PARTİ & EĞLENCE (30 pairs)
+    ("Parti","Ev buluşması"),("Doğum günü","Yıl dönümü"),("Düğün","Nişan"),("Kulüp","Bar"),("DJ","Şarkıcı"),("Playlist","Şarkı listesi"),("Selfie","Toplu foto"),("Takım elbise","Spor kombin"),("Topuklu ayakkabı","Spor ayakkabı"),("Makyaj","Parfüm"),("Hediye","Sürpriz"),("Dans","Oyun havası"),("Yüksek müzik","Slow şarkı"),("After party","Öncesi buluşma"),("Kız kıza","Erkek erkeğe"),("Gece çıkışı","Akşam takılması"),("Sahil","Çatı katı"),("Ev partisi","Yazlık partisi"),("Shot","Bira"),("VIP masa","Normal masa"),("Hikaye","Gönderi"),("Canlı yayın","Video çekmek"),("Dekor","Işık"),("Pasta kesmek","Kadeh kaldırmak"),("Gece geç saat","Sabaha kadar"),("Konsept","Tema"),("Dans pisti","Masa başı"),("Takılmak","Buluşmak"),("Yaz partisi","Havuz partisi"),("Sürpriz giriş","Alkış"),
+
+    # 😂 ARKADAŞ MUHABBETİ (30 pairs)
+    ("Sevgili","Flört"),("Eski sevgili","Takipte kalmak"),("En yakın arkadaş","Kanka"),("Ev arkadaşı","Komşu"),("Patron","Müdür"),("Takılmak","Yazışmak"),("Trip atmak","Darılmak"),("Naz yapmak","Kapris"),("Drama","Kriz"),("Tembel","Rahat"),("Havalı","Cool"),("Gösteriş","Şekil yapmak"),("Zengin","Paralı"),("Geç kalmak","Son anda gelmek"),("Sporcu","Gym manyağı"),("Partici","Gece kuşu"),("Romantik","Aşık"),("Mesaj atmak","Aramak"),("Engellemek","Sessize almak"),("Ekran görüntüsü","Paylaşmak"),("Kıskanç","Meraklı"),("Sır","Sürpriz"),("Hava atmak","Övünmek"),("Abartmak","Büyütmek"),("Sessiz","Sakin"),("Enerjik","Hareketli"),("Utangaç","Rahat"),("Ciddi","Şakacı"),("Cool takılmak","Umursamamak"),("Dedikodu","Sohbet"),
+
+    # 🚗 GÜNLÜK HAYAT (30 pairs)
+    ("Araba","Jeep"),("Motor","Scooter"),("Uber","Taksi"),("Nakit","Kart"),("Alışveriş","Sipariş"),("Tatil","Gezi"),("Kamp","Piknik"),("Apartman","Site"),("AVM","Market"),("Park","Lunapark"),("Havuz","Deniz"),("Sinema","Konser"),("Televizyon","Laptop"),("Telefon","Tablet"),("Şarj aleti","Powerbank"),("Saat","Gözlük"),("Altın","Gümüş"),("Kahvaltı","Brunch"),("Öğle yemeği","Akşam yemeği"),("Spor","Antrenman"),("Kitap","Dergi"),("Dizi","Film"),("Futbol","Basketbol"),("Çay molası","Kahve molası"),("İş","Meslek"),("Öğrenci","Stajyer"),("Ofis","Atölye"),("Toplantı","Buluşma"),("Sabah insanı","Gece kuşu"),("Alarm","Hatırlatma"),
+    
     ],
     "ru": [
         ("Аэропорт","Станция"),("Больница","Клиника"),("Школа","Университет"),
