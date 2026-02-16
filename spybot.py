@@ -349,7 +349,7 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     uid = q.from_user.id
-    game = games.pop(uid)
+    game = games[uid]
     lang = game["lang"]
 
     text = (
@@ -361,25 +361,33 @@ async def end_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     kb = [[InlineKeyboardButton(TEXT[lang]["new"], callback_data="restart")]]
     await q.message.reply_text(text, reply_markup=InlineKeyboardMarkup(kb))
 
+    game["state"] = "finished"
+
 # ================= RESTART =================
-# ================= RESTART (FIXED) =================
-# ================= RESTART (FINAL FIX) =================
+# ================= RESTART (REAL FIX) =================
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
 
     uid = q.from_user.id
 
-    # پاک‌سازی کامل state
+    # گرفتن زبان از callback message قبل از حذف state
+    lang = games.get(uid, {}).get("lang")
+
+    # اگر end_game قبلاً pop کرده بود
+    if not lang:
+        # زبان رو از context نگه میداریم
+        lang = context.user_data.get("lang", "en")
+
+    # ساخت state جدید با همون زبان
     games[uid] = {
-        "lang": games.get(uid, {}).get("lang", "fa"),
+        "lang": lang,
         "state": "players",
-        "msgs": [],
     }
 
-    lang = games[uid]["lang"]
+    # ذخیره زبان در user_data برای اطمینان
+    context.user_data["lang"] = lang
 
-    # فقط پرسش تعداد بازیکن – بدون تغییر ظاهر
     await q.message.reply_text(TEXT[lang]["players"])
 
 
